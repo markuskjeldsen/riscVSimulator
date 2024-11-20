@@ -9,7 +9,7 @@ typedef struct {
     uint32_t func3;
     uint32_t rs1;
     uint32_t rs2;
-    uint32_t offset;
+    int32_t offset;
 } B_type;
 
 B_type* BtypeDecode(unsigned int, CPURegisters*);

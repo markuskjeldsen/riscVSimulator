@@ -9,7 +9,7 @@
 int32_t offsetDecode(uint32_t instruction) {
     int first4 = (instruction >> 8) & 0xF;
     int next6 = (instruction >> 25) & 0b111111; // Bits [30:25]
-    int next1 = (instruction >> 6) & 0x1;
+    int next1 = (instruction >> 7) & 0x1;
     int last1 = (instruction >> 31) & 0x1;
 
 
@@ -22,6 +22,7 @@ int32_t offsetDecode(uint32_t instruction) {
     if(last1){
         offset = offset | 0xFFFFF000;
     }
+    offset = offset << 1;
 
     return offset;
     }
@@ -42,7 +43,7 @@ B_type* BtypeDecode(unsigned int instruction, CPURegisters* reg) {
     BInstruction->rs1 = (instruction >> 15) & 0x1F;     // 5 bits for rs1 (bits 19:15)
     BInstruction->rs2 = (instruction >> 20) & 0x1F;     // 5 bits for rs2 (bits 24:20)
 
-    BInstruction->offset = offsetDecode(instruction);
+    BInstruction->offset = offsetDecode(instruction) - 4;
 
     return BInstruction;
 }
@@ -53,6 +54,15 @@ void Bfunc3Decode(B_type* Binstruct, CPURegisters* reg, unsigned int* PC ){
     
     switch (Binstruct->func3)
     {
+    case 7: // bgeu
+        bgeu(Binstruct, reg, PC);
+        break;    
+    case 6: // bltu
+        bltu(Binstruct, reg, PC);
+        break;
+    case 5: // bge
+        bge(Binstruct, reg, PC);
+        break;
     case 4: // blt
         blt(Binstruct, reg, PC);
         break;
@@ -71,12 +81,51 @@ void Bfunc3Decode(B_type* Binstruct, CPURegisters* reg, unsigned int* PC ){
     free(Binstruct);
     return;
 }
-
-
-void blt(B_type* Binstruct, CPURegisters* reg, unsigned int* PC){
-
+void bgeu(B_type* Binstruct, CPURegisters* reg, unsigned int* PC){
+    if (
+        ((uint32_t)reg->x[Binstruct->rs1]) >= ((uint32_t)reg->x[Binstruct->rs2])
+        )
+    {
+        *PC = *PC + Binstruct->offset;
+    }
+    return;
 
 }
+void bltu(B_type* Binstruct, CPURegisters* reg, unsigned int* PC){
+    if (
+        ((uint32_t)reg->x[Binstruct->rs1]) < ((uint32_t)reg->x[Binstruct->rs2])
+        )
+    {
+        *PC = *PC + Binstruct->offset;
+    }
+    return;
+
+}
+
+void bge(B_type* Binstruct, CPURegisters* reg, unsigned int* PC){
+    if (
+        reg->x[Binstruct->rs1] > reg->x[Binstruct->rs2]
+        )
+    {
+        *PC = *PC + Binstruct->offset;
+    }
+    return;
+
+}
+
+void blt(B_type* Binstruct, CPURegisters* reg, unsigned int* PC){
+    if (
+        reg->x[Binstruct->rs1] < reg->x[Binstruct->rs2]
+        )
+    {
+        *PC = *PC + Binstruct->offset;
+    }
+    return;
+
+}
+
+
+
 
 void bne(B_type* Binstruct, CPURegisters* reg, unsigned int* PC){
     if (
