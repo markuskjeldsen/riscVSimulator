@@ -1,19 +1,43 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-
 #include <file_read.c>
 #include <decode.c>
 #include <registers.c>
 
 
-// 00 50 01 93 
-// 00 31 81 B3
+uint8_t* initSP(){
 
-typedef struct {
-    int counter;
+    uint8_t* SP = malloc( sizeof(uint32_t)*1048576 );
+    if (SP == NULL)
+    {
+        printf("Stack pointer wasnt created");
+    }
     
-} ProgramCounter;
+    return SP;
+}
+
+void printmemoryto(uint8_t* sp, int32_t upto){
+
+        printf("one cycle more!\n");
+        for (int32_t i = 0; i < upto; i++)
+        {
+        if (i == 0)
+        {
+            printf("%0x:%d \t",i,sp[i]);
+        } else if (i % 4 == 0)
+        {
+            printf("\n");
+            printf("%0x:%d \t",i,sp[i]);
+        } else {
+            printf("%0x:%d \t",i,sp[i]);
+        }
+        }
+
+    
+    printf("\n");    
+}
+
 
 
 int determineLength(unsigned int* I){
@@ -26,16 +50,11 @@ int determineLength(unsigned int* I){
 }
 
 
-
-
-
-
-
 int main() {
 
 
-    //int opcode = (instructions[0] & (0b000000000000000000000000001111111))
-    char* path = "tests/branchtrap.bin";
+    char* path = "tests/loop.bin";
+    uint8_t* sp = initSP();
     unsigned int* instructions = read_file(path);     
     CPURegisters* registers = init_registers();
 
@@ -43,21 +62,22 @@ int main() {
     unsigned int *PC = &value;  // Set the value at the location PC points to as 0
 
     int length = determineLength(instructions) << 2;
-    //int length = sizeof(instructions) / sizeof(instructions[0]); 
 
 
     while (1)
     {
-        if(execute(instructions, registers, PC)){
+        if(execute(instructions, registers, PC, sp)){
             break;
         }
         *PC = *PC + 4;  
         if(length < *PC ){
             break;
         }
+        printmemoryto(sp, 32);
+        
     }
 
-    
+    free(sp);
     free(instructions);
     return EXIT_SUCCESS;
 }
