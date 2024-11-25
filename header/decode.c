@@ -35,12 +35,17 @@ int execute(unsigned int *instruction, CPURegisters *registers, int *PC, uint8_t
     int opcode = (instruction[*PC / 4] & 0b000000000000000000000000001111111);  // Corrected semicolon
     S_type* SInstruct;
 
-    if(*PC == 104){
+    if(*PC == 8){
         printf("flag!");
     }
-    if(*PC == 16){
+    if(*PC == 84){
         printf("flag!");
     }
+    if(*PC == 56){
+        printf("flag!");
+    }
+
+    
     
 
     switch (opcode) {

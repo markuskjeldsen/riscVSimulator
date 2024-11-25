@@ -24,13 +24,13 @@ void printmemoryto(uint8_t* sp, int32_t upto){
         {
         if (i == 0)
         {
-            printf("%0x:%d \t",i,sp[i]);
+        //    printf("%0x:%d \t",i,sp[i]);
         } else if (i % 4 == 0)
         {
-            printf("\n");
-            printf("%0x:%d \t",i,sp[i]);
-        } else {
-            printf("%0x:%d \t",i,sp[i]);
+        //    printf("\n");
+        //   printf("%0x:%d \t",i,sp[i]);
+        } else if (i % 4 == 3){
+            printf("%0x:%d \t \n",i,sp[i]);
         }
         }
 
@@ -53,7 +53,7 @@ int determineLength(unsigned int* I){
 int main() {
 
 
-    char* path = "tests/loop.bin";
+    char* path = "tests/string.bin";
     uint8_t* sp = initSP();
     unsigned int* instructions = read_file(path);     
     CPURegisters* registers = init_registers();
@@ -74,7 +74,7 @@ int main() {
             break;
         }
         printf("%0x \n", *PC);
-        printmemoryto(sp, 32);
+        printmemoryto(sp, 64*4);
         registers->x[0] = 0;
         
     }
