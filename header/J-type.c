@@ -31,7 +31,7 @@ J_type* JtypeDecode(unsigned int instruction, CPURegisters* reg) {
     JInstruction->immediate = sign_extend_12((instruction >> 20) & 0xFFF);
         
     } else {
-        
+
     JInstruction->rd = (instruction >> 7) & 0x1F;       // 5 bits for rd (bits 11:7)
 
     int lastbit = instruction       & 0x80000000;
@@ -43,6 +43,10 @@ J_type* JtypeDecode(unsigned int instruction, CPURegisters* reg) {
                      (bit11         >> 9  ) |  // 11th bit
                      (bit12_19      >> 1  ) |  //  >> 12   Bits [10:5]
                      (lastbit       >> 11 );   // Bit 4
+
+    offset = (offset << 20) >> 20;
+
+    
 
     JInstruction->immediate = offset;
     }
@@ -85,7 +89,7 @@ void Jfunc3Decode(J_type* Jinstruct, CPURegisters* reg, unsigned int* PC){
 void jal(J_type* Jinstruct, CPURegisters* reg, unsigned int* PC){
 
     reg->x[Jinstruct->rd] = *PC;
-    *PC = Jinstruct->immediate;
+    *PC = *PC + Jinstruct->immediate - 4;
     
     return;
 }
@@ -103,8 +107,6 @@ void jalr(J_type* Jinstruct, CPURegisters* reg, unsigned int* PC){
     new_address = new_address & 0xFFFFFFFE;
 
     *PC = new_address;
-
-    free(Jinstruct);
     
     return;
 }
