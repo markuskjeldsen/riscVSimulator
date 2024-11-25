@@ -73,6 +73,7 @@ int main() {
         if(length < *PC ){
             break;
         }
+        printf("%d \n", *PC);
         printmemoryto(sp, 32);
         
     }

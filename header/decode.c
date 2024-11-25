@@ -35,6 +35,10 @@ int execute(unsigned int *instruction, CPURegisters *registers, int *PC, uint8_t
     int opcode = (instruction[*PC / 4] & 0b000000000000000000000000001111111);  // Corrected semicolon
     S_type* SInstruct;
 
+    if(*PC == 44){
+        printf("flag!");
+    }
+
     switch (opcode) {
         case 111: //JAL
         case 103: //JALR
