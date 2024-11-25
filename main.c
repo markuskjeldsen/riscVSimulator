@@ -8,7 +8,7 @@
 
 uint8_t* initSP(){
 
-    uint8_t* SP = malloc( sizeof(uint32_t)*1048576 );
+    uint8_t* SP = (uint8_t)malloc( sizeof(uint32_t)*1048576 );
     if (SP == NULL)
     {
         printf("Stack pointer wasnt created");
