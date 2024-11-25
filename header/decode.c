@@ -41,9 +41,13 @@ int execute(unsigned int *instruction, CPURegisters *registers, int *PC, uint8_t
     if(*PC == 84){
         printf("flag!");
     }
-    if(*PC == 56){
+    if(*PC == 28){
         printf("flag!");
     }
+    if(*PC == 40){
+        printf("flag!");
+    }
+    
 
     
     
@@ -83,7 +87,6 @@ int execute(unsigned int *instruction, CPURegisters *registers, int *PC, uint8_t
             if(ecall(instruction[*PC/4], registers)){
                 return 1;
             }
-
 
         default:
             break;
