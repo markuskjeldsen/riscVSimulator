@@ -31,7 +31,7 @@ int ecall(unsigned int instruction,CPURegisters* reg){
 
 
 
-int execute(unsigned int *instruction, CPURegisters *registers, int *PC, uint8_t* sp) {
+int execute(unsigned int *instruction, CPURegisters *registers, unsigned int *PC, uint8_t* sp) {
     int opcode = (instruction[*PC / 4] & 0b000000000000000000000000001111111);  // Corrected semicolon
     S_type* SInstruct;
 
