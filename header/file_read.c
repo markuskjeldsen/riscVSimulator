@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include "file_read.h"
 
 #define INSTRUCTION_SIZE 4 // 4 bytes for 32 bits
+
 
 unsigned int * read_file(char *path){
     FILE* file = fopen(path, "rb"); // Open in binary read mode

@@ -1,6 +1,3 @@
-#include <file_read.c>
-
-
 
 typedef struct {
     unsigned int *instructions;
