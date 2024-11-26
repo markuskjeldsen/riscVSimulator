@@ -99,8 +99,3 @@ int main(int argc,char* argv[]) {
     free(instructions);
     return EXIT_SUCCESS;
 }
-
-
-// 00 50 01 93 
-// 00 31 81 B3
-
