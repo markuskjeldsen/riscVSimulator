@@ -10,6 +10,7 @@ unsigned int * read_file(char *path){
     FILE* file = fopen(path, "rb"); // Open in binary read mode
     if (!file) {
         perror("Failed to open file");
+        return 1;
     }
 
     // Get file size

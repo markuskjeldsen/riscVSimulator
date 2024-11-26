@@ -102,7 +102,10 @@ int main(int argc,char* argv[]) {
     }
 
     uint8_t* sp = initSP();
-    unsigned int* instructions = read_file(path);     
+    unsigned int* instructions = read_file(path);
+    if(instructions == 1){
+        return 1;
+    }     
     CPURegisters* registers = init_registers();
 
     load_program_into_memory(sp,instructions);
