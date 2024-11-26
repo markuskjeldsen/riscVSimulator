@@ -4,6 +4,7 @@
 #include <file_read.c>
 #include <decode.c>
 #include <registers.c>
+#include <string.h>
 
 
 uint8_t* initSP(){
@@ -19,9 +20,14 @@ uint8_t* initSP(){
 
 void printmemoryto(uint8_t* sp, int32_t upto){
 
-        printf("one cycle more!\n");
-        
 
+        for (int i = 100; i < 136; i += 4) {
+            printf("%0x: %u, %u, %u, %u\n",
+            i, sp[i], sp[i + 1], sp[i + 2], sp[i + 3]);
+            }
+
+        
+/*
         for(int i = 0x00100000; i > 0x00100000 - upto; i--){
             if(i%4 == 0){
                 printf("\n");
@@ -32,7 +38,7 @@ void printmemoryto(uint8_t* sp, int32_t upto){
          
             
         }
-        /*
+        
         for (int32_t i = 0; i < upto; i++)
         {
         if (i == 0)
@@ -54,7 +60,7 @@ void printmemoryto(uint8_t* sp, int32_t upto){
 
 
 void load_program_into_memory(uint8_t* sp, unsigned int* instructions) {
-    int num_instructions = 100;
+    int num_instructions = 64;
 
     for (int i = 0; i < num_instructions; i++) {
         sp[i * 4 + 3] = (instructions[i] & 0xFF000000) >> 24; // Extract the most significant byte
@@ -85,10 +91,16 @@ int determineLength(unsigned int* I){
 }
 
 
-int main() {
+int main(int argc,char* argv[]) {
 
 
-    char* path = "tests/string.bin";
+    char path[50] = "tests/";
+    if(argv[1]){
+    strcat(path,argv[1]);
+    } else {
+    strcat(path,"recursive.bin");
+    }
+
     uint8_t* sp = initSP();
     unsigned int* instructions = read_file(path);     
     CPURegisters* registers = init_registers();

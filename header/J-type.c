@@ -33,7 +33,7 @@ J_type* JtypeDecode(unsigned int instruction, CPURegisters* reg) {
     } else {
 
     JInstruction->rd = (instruction >> 7) & 0x1F;       // 5 bits for rd (bits 11:7)
-
+    
     int lastbit = instruction       & 0x80000000;
     int first1_10bits = instruction & 0x7FE00000;
     int bit11 = instruction         & 0x00100000;

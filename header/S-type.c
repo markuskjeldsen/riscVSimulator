@@ -96,10 +96,11 @@ void store(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp){
 
     switch (Sinstruct->func3)
     {
-    case 3:
+
+    case 2:
         sw(Sinstruct,reg,sp);
         break;
-    case 2:
+    case 1:
         sh(Sinstruct,reg,sp);
         break;
     case 0:
@@ -119,36 +120,35 @@ void store(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp){
 
 
 void sw(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp){
-    uint8_t first4       = (reg->x[Sinstruct->rs1] & 0xFF000000) >> 24;
-    uint8_t uppermiddle4 = (reg->x[Sinstruct->rs1] & 0x00FF0000) >> 16;
-    uint8_t lowermiddle4 = (reg->x[Sinstruct->rs1] & 0x0000FF00) >> 8;
-    uint8_t last4        = (reg->x[Sinstruct->rs1] & 0x000000FF) >> 0;
+    uint8_t last4        = (reg->x[Sinstruct->rs1] & 0xFF000000) >> 24;
+    uint8_t lowermiddle4 = (reg->x[Sinstruct->rs1] & 0x00FF0000) >> 16;
+    uint8_t uppermiddle4 = (reg->x[Sinstruct->rs1] & 0x0000FF00) >> 8;
+    uint8_t first4       = (reg->x[Sinstruct->rs1] & 0x000000FF) >> 0;
     
     int address = reg->x[Sinstruct->rs2];
     int offset = Sinstruct->immediate;
 
     sp[ 
-    stackpointer(address,offset,sp) - 0] = first4;
+    stackpointer(address,offset,sp) + 0] = first4;
     sp[ 
-    stackpointer(address,offset,sp) - 1] = uppermiddle4;
+    stackpointer(address,offset,sp) + 1] = uppermiddle4;
     sp[ 
-    stackpointer(address,offset,sp) - 2] = lowermiddle4;
+    stackpointer(address,offset,sp) + 2] = lowermiddle4;
     sp[ 
-    stackpointer(address,offset,sp) - 3] = last4;
+    stackpointer(address,offset,sp) + 3] = last4;
     
-
     return;
 }
 
 void sh(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp) {
-    uint8_t upper_byte = (reg->x[Sinstruct->rs1] & 0x0000FF00) >> 8;
-    uint8_t lower_byte = (reg->x[Sinstruct->rs1] & 0x000000FF);
+    uint8_t lower_byte = (reg->x[Sinstruct->rs1] & 0x0000FF00) >> 8;
+    uint8_t upper_byte = (reg->x[Sinstruct->rs1] & 0x000000FF);
 
     int address = reg->x[Sinstruct->rs2];
     int offset = Sinstruct->immediate;
-
-    sp[stackpointer(address, offset, sp) - 0] = lower_byte;
-    sp[stackpointer(address, offset, sp) - 1] = upper_byte;
+    
+    sp[stackpointer(address, offset, sp) + 0] = upper_byte;
+    sp[stackpointer(address, offset, sp) + 1] = lower_byte;
 
     return;
 }
@@ -180,7 +180,8 @@ void load(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp){
         lw(Sinstruct,reg,sp);
         break;
     case 1:
-        lh();
+        lh(Sinstruct,reg,sp);
+        break;
     case 0:
         lb(Sinstruct,reg,sp);
         break;
@@ -198,13 +199,13 @@ void lw(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp){
     int offset = Sinstruct->immediate;
 
 
-    int first4       = sp[stackpointer(address,offset,sp) - 0];
-    int uppermiddle4 = sp[stackpointer(address,offset,sp) - 1];
-    int lowermiddle4 = sp[stackpointer(address,offset,sp) - 2];
-    int last4        = sp[stackpointer(address,offset,sp) - 3];
+    int last4        = sp[stackpointer(address,offset,sp) - 0];
+    int lowermiddle4 = sp[stackpointer(address,offset,sp) + 1];
+    int uppermiddle4 = sp[stackpointer(address,offset,sp) + 2];
+    int first4       = sp[stackpointer(address,offset,sp) + 3];
     
     
-    reg->x[Sinstruct->rd] = 
+    reg->x[Sinstruct->rd] = (int32_t)
           first4 << 24 | 
     uppermiddle4 << 16 |
     lowermiddle4 << 8  |
@@ -224,12 +225,13 @@ void lh(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp) {
     // Compute the actual memory location using stackpointer function
     int mem_address = stackpointer(address, offset, sp);
 
-    // Retrieve the two bytes from memory
-    int8_t low_byte = sp[mem_address];        // Lower 8 bits
-    int8_t high_byte = sp[mem_address + 1];  // Upper 8 bits
+    int16_t low_byte  = sp[mem_address + 1];
+    int16_t high_byte = sp[mem_address + 0];
+    
+
 
     // Combine the bytes into a 16-bit signed value and sign-extend to 32 bits
-    int16_t halfword = (high_byte << 8) | (low_byte & 0xFF);
+    int16_t halfword = (high_byte ) | (low_byte );
     reg->x[Sinstruct->rd] = (int32_t)halfword; // Sign-extension to 32 bits
 
     return;
@@ -243,7 +245,9 @@ void lb(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp){
     int address = reg->x[Sinstruct->rs1];
     int offset = Sinstruct->immediate;
 
-    reg->x[Sinstruct->rd] = sp[stackpointer(address,offset,sp)];
+     
+
+    reg->x[Sinstruct->rd] = (int8_t)sp[stackpointer(address,offset,sp)];;
 
     return;
 }
