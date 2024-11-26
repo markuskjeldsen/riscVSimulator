@@ -66,7 +66,7 @@ int execute(unsigned int *instruction, CPURegisters *registers, int *PC, uint8_t
             R_type* RInstruct = RtypeDecode(instruction[*PC/4], registers);
             Rfunc3Decode(RInstruct,registers);
             break;
-        case 35: // sw  store and load functions
+        case 35: // sw  store functions
             SInstruct = StypeDecode(instruction[*PC/4], registers);
             Sfunc3Decode(SInstruct,registers,sp);
             break;
@@ -74,7 +74,7 @@ int execute(unsigned int *instruction, CPURegisters *registers, int *PC, uint8_t
             I_type* IInstruct = ItypeDecode(instruction[*PC / 4], registers);
             Ifunc3Decode(IInstruct,registers);
             break;
-        case 3: // lW
+        case 3: // lW load functions
             SInstruct = StypeDecode(instruction[*PC/4], registers);
             Sfunc3Decode(SInstruct,registers,sp);
             break;
