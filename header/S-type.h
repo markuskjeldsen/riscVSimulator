@@ -2,7 +2,8 @@
 #define S_TYPE_H
 
 #include <stdint.h>
-#include "registers.h" // Assuming you need this for the CPURegisters type
+#include "registers.h"  
+
 
 typedef struct {
     uint32_t opcode;

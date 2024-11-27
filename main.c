@@ -26,33 +26,6 @@ void printmemoryto(uint8_t* sp, int32_t upto){
             i, sp[i], sp[i + 1], sp[i + 2], sp[i + 3]);
             }
 
-        
-/*
-        for(int i = 0x00100000; i > 0x00100000 - upto; i--){
-            if(i%4 == 0){
-                printf("\n");
-            }
-                printf("%0x",sp[i]);
-         
-         
-         
-            
-        }
-        
-        for (int32_t i = 0; i < upto; i++)
-        {
-        if (i == 0)
-        {
-            printf("%0x:%d \t",i,sp[i]);
-        } else if (i % 4 == 0)
-        {
-            printf("\n");
-           printf("%0x:%d \t",i,sp[i]);
-        } else if (i % 4 == 3){
-            printf("%0x:%d \t \n",i,sp[i]);
-        }
-        }
-        */
 
     
     printf("\n");    
@@ -68,13 +41,6 @@ void load_program_into_memory(uint8_t* sp, unsigned int* instructions) {
         sp[i * 4 + 1] = (instructions[i] & 0x0000FF00) >> 8;  // Extract the third byte
         sp[i * 4 + 0] = (instructions[i] & 0x000000FF);       // Extract the least significant byte
     }
-/*
-    for (int i = 0; i < num_instructions * 4; i += 4) {
-        printf("%2zu: %u, %u, %u, %u\n",
-                i, sp[i], sp[i + 1], sp[i + 2], sp[i + 3]
-            );
-    }
-*/
     return;
 }
 
@@ -136,8 +102,3 @@ int main(int argc,char* argv[]) {
     free(instructions);
     return EXIT_SUCCESS;
 }
-
-
-// 00 50 01 93 
-// 00 31 81 B3
-

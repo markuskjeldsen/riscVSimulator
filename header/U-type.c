@@ -5,14 +5,11 @@
 #include "registers.h"
 
 U_type* UtypeDecode(unsigned int instruction, CPURegisters* reg) {
-    // Dynamically allocate memory for the struct
     U_type* UInstruction = malloc(sizeof(U_type));
     if (UInstruction == NULL) {
-        // Handle allocation failure
         return NULL;
     }
     
-    // Extract the fields correctly using bitwise operations
     UInstruction->opcode = (instruction & 0x3F);  // 6 bits for opcode
     UInstruction->rd = (instruction >> 7) & 0x1F;  // 5 bits for rd
     UInstruction->immediate = (instruction >> 12);  // 20 bits for immediate
