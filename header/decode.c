@@ -1,12 +1,12 @@
 #include "decode.h"
 #include <stdio.h>
 #include <stdint.h>
-#include <U-type.c>
-#include <I-type.c>
-#include <R-type.c>
-#include <B-type.c>
-#include <J-type.c>
-#include <S-type.c>
+#include "U-type.h"
+#include "I-type.h"
+#include "R-type.h"
+#include "B-type.h"
+#include "J-type.h"
+#include "S-type.h"
 
 
 

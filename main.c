@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <file_read.c>
-#include <decode.c>
-#include <registers.c>
 #include <string.h>
+#include "file_read.h"
+#include "decode.h"
+#include "registers.h"
+
 
 
 uint8_t* initSP(){
@@ -19,7 +20,6 @@ uint8_t* initSP(){
 }
 
 void printmemoryto(uint8_t* sp, int32_t upto){
-
 
         for (int i = 100; i < 136; i += 4) {
             printf("%0x: %u, %u, %u, %u\n",
@@ -60,15 +60,18 @@ int determineLength(unsigned int* I){
 int main(int argc,char* argv[]) {
 
 
-    char path[50] = "tests/";
+    char path[50];
     if(argv[1]){
     strcat(path,argv[1]);
     } else {
-    strcat(path,"recursive.bin");
+    strcat(path,"tests/recursive.bin");
     }
 
     uint8_t* sp = initSP();
-    unsigned int* instructions = read_file(path);     
+    unsigned int* instructions = read_file(path);
+    if(instructions == 1){
+        return 1;
+    }     
     CPURegisters* registers = init_registers();
 
     load_program_into_memory(sp,instructions);

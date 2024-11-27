@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <registers.h>
+#include "registers.h"
 
 U_type* UtypeDecode(unsigned int instruction, CPURegisters* reg) {
     U_type* UInstruction = malloc(sizeof(U_type));

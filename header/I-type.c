@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <registers.h>
+#include "registers.h"
 
 int32_t sign_extend_12(int32_t value) {
     // If the MSB (bit 11) is set, extend the sign bit.
