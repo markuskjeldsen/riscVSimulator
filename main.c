@@ -33,7 +33,7 @@ void printmemoryto(uint8_t* sp, int32_t upto){
 
 
 void load_program_into_memory(uint8_t* sp, unsigned int* instructions) {
-    int num_instructions = 64;
+    int num_instructions = 256;
 
     for (int i = 0; i < num_instructions; i++) {
         sp[i * 4 + 3] = (instructions[i] & 0xFF000000) >> 24; // Extract the most significant byte
@@ -44,7 +44,12 @@ void load_program_into_memory(uint8_t* sp, unsigned int* instructions) {
     return;
 }
 
+void printReg(CPURegisters* reg){
+	for (int i = 0; i < 32 ; i++){
+		printf("%d:%0x\n",i,reg->x[i]);
+	}
 
+}
 
 
 int determineLength(unsigned int* I){
@@ -64,7 +69,7 @@ int main(int argc,char* argv[]) {
     if(argv[1]){
     strcat(path,argv[1]);
     } else {
-    strcat(path,"tests/recursive.bin");
+    strcat(path,"tests/width.bin");
     }
 
     uint8_t* sp = initSP();
@@ -98,6 +103,24 @@ int main(int argc,char* argv[]) {
         
     }
 
+    printReg(registers);
+    if (argc > 1) {
+        int len = strlen(argv[1]);
+        if (len > 3) {
+            char newstring[18]; // Ensure sufficient space for the string and "res" suffix
+            strncpy(newstring, argv[1], len - 3);
+            newstring[len - 3] = '\0'; // Null-terminate the string
+
+            strcat(newstring, "res"); // Add "res" to the string
+
+            write_res_file(newstring, registers->x); // Example use with a dummy register value
+            printf("%s\n", newstring);
+        } else {
+            printf("Input string is too short.\n");
+        }
+    } else {
+        printf("No input argument provided.\n");
+    }
     free(sp);
     free(instructions);
     return EXIT_SUCCESS;

@@ -176,6 +176,12 @@ void load(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp){
 
     switch (Sinstruct->func3)
     {
+    case 4:
+        lbu(Sinstruct,reg,sp);
+        break;
+    case 5:
+        lhu(Sinstruct,reg,sp);
+        break;
     case 2:
         lw(Sinstruct,reg,sp);
         break;
@@ -218,11 +224,9 @@ void lw(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp){
 
 
 void lh(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp) {
-    // Calculate the memory address
     int address = reg->x[Sinstruct->rs1];
     int offset = Sinstruct->immediate;
 
-    // Compute the actual memory location using stackpointer function
     int mem_address = stackpointer(address, offset, sp);
 
     int16_t low_byte  = sp[mem_address + 1];
@@ -230,9 +234,8 @@ void lh(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp) {
     
 
 
-    // Combine the bytes into a 16-bit signed value and sign-extend to 32 bits
-    int16_t halfword = (high_byte ) | (low_byte );
-    reg->x[Sinstruct->rd] = (int32_t)halfword; // Sign-extension to 32 bits
+    int16_t halfword = (int16_t)((high_byte ) | (low_byte << 8));
+    reg->x[Sinstruct->rd] = halfword; 
 
     return;
 }
@@ -248,6 +251,38 @@ void lb(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp){
      
 
     reg->x[Sinstruct->rd] = (int8_t)sp[stackpointer(address,offset,sp)];;
+
+    return;
+}
+
+
+void lhu(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp) {
+    int address = reg->x[Sinstruct->rs1];
+    int offset = Sinstruct->immediate;
+
+    int mem_address = stackpointer(address, offset, sp);
+
+    int16_t low_byte  = sp[mem_address + 1];
+    int16_t high_byte = sp[mem_address + 0];
+    
+
+
+    uint32_t halfword = (high_byte  ) | (low_byte << 8 );
+    reg->x[Sinstruct->rd] = halfword;
+    return;
+}
+
+
+void lbu(S_type* Sinstruct, CPURegisters* reg, uint8_t* sp){
+    
+
+
+    int address = reg->x[Sinstruct->rs1];
+    int offset = Sinstruct->immediate;
+
+     
+
+    reg->x[Sinstruct->rd] = sp[stackpointer(address,offset,sp)];;
 
     return;
 }
